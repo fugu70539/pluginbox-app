@@ -7,11 +7,9 @@ export default function WelcomePage() {
   return (
     <div className="relative h-screen w-full bg-black flex flex-col items-center justify-between p-10 overflow-hidden">
       
-      {/* Background Ambient Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[60%] bg-white/5 blur-[120px] rounded-full z-0" />
 
       <div className="flex-1 flex flex-col items-center justify-center z-10 w-full">
-        {/* FacePic Section */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -19,7 +17,7 @@ export default function WelcomePage() {
           className="relative w-48 h-48 mb-12"
         >
           <Image 
-            src="/FacePic.png"
+            src="/Pics/FacePic.PNG"
             alt="PluginBox Face"
             fill
             priority
@@ -27,12 +25,11 @@ export default function WelcomePage() {
           />
         </motion.div>
 
-        {/* Text Section */}
         <motion.h1 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-[26px] font-bold tracking-tight text-white mb-3"
+          className="text-[26px] font-bold tracking-tight text-white mb-3 text-center"
         >
           Welcome to PluginBox
         </motion.h1>
@@ -47,7 +44,6 @@ export default function WelcomePage() {
         </motion.p>
       </div>
 
-      {/* Button Section */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
