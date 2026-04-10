@@ -14,15 +14,14 @@ body {
 }
 
 .glass-button {
-  @apply relative overflow-hidden transition-all duration-300 active:scale-95;
+  @apply relative overflow-hidden transition-all duration-300 active:scale-95 flex items-center justify-center;
   background: linear-gradient(180deg, rgba(40, 40, 40, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 .glass-button:hover {
   border-color: rgba(255, 255, 255, 0.15);
-  background: linear-gradient(180deg, rgba(50, 50, 50, 0.8) 0%, rgba(25 (30, 30, 30, 0.9) 100%);
+  background: linear-gradient(180deg, rgba(50, 50, 50, 0.8) 0%, rgba(30, 30, 30, 0.9) 100%);
 }
