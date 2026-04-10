@@ -1,9 +1,16 @@
 import './globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 
 export const metadata: Metadata = {
   title: 'PluginBox',
-  description: 'Telegram Power-ups',
+  description: 'Premium Telegram Tools',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({
@@ -12,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ru">
-      <body>{children}</body>
+    <html lang="en" className="select-none touch-none">
+      <body className="bg-black antialiased">{children}</body>
     </html>
   )
 }
