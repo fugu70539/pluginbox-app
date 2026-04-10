@@ -5,18 +5,18 @@ import { motion } from 'framer-motion';
 
 export default function WelcomePage() {
   return (
-    <div className="relative min-h-screen bg-black flex flex-col items-center justify-between p-10 text-center overflow-hidden">
+    <div className="relative h-screen w-full bg-black flex flex-col items-center justify-between p-10 overflow-hidden">
       
-      <div className="absolute top-[-15%] left-[-15%] w-[70%] h-[50%] bg-blue-600/10 blur-[140px] rounded-full z-0" />
-      <div className="absolute bottom-[-15%] right-[-15%] w-[70%] h-[50%] bg-purple-600/10 blur-[140px] rounded-full z-0" />
+      {/* Background Ambient Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[60%] bg-white/5 blur-[120px] rounded-full z-0" />
 
-      <div className="flex-1 flex flex-col items-center justify-center z-10 w-full max-w-sm">
-        
+      <div className="flex-1 flex flex-col items-center justify-center z-10 w-full">
+        {/* FacePic Section */}
         <motion.div 
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative w-40 h-40 mb-10"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative w-48 h-48 mb-12"
         >
           <Image 
             src="/FacePic.png"
@@ -27,32 +27,34 @@ export default function WelcomePage() {
           />
         </motion.div>
 
+        {/* Text Section */}
         <motion.h1 
-          initial={{ y: 15, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="text-2xl font-bold tracking-tight text-white mb-4"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-[26px] font-bold tracking-tight text-white mb-3"
         >
           Welcome to PluginBox
         </motion.h1>
 
         <motion.p 
-          initial={{ y: 15, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="text-zinc-500 text-sm leading-relaxed max-w-[290px]"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-white/50 text-[15px] leading-relaxed max-w-[280px] text-center"
         >
-          Download, create and use plugins directly in Telegram chats, channels and private messages to simplify the messenger experience.
+          Download, create and use plugins directly in Telegram chats and channels.
         </motion.p>
       </div>
 
+      {/* Button Section */}
       <motion.div 
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.7, duration: 0.6 }}
-        className="w-full max-w-xs z-10 pb-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="w-full max-w-xs z-10 pb-10"
       >
-        <button className="glass-button w-full text-white font-semibold py-4 rounded-full text-base">
+        <button className="white-glass-button w-full text-black font-bold py-4 rounded-full text-[16px]">
           Get Started
         </button>
       </motion.div>
