@@ -1,39 +1,77 @@
-"use client";
+/* Переменные остаются прежними */
+:root {
+  --bg: #000;
+  --t-bg: rgba(23, 23, 23, 0.85); /* Чуть прозрачнее и темнее */
+  --act: #ffffff;
+  --inact: #8e8e93;
+  --pill: rgba(255, 255, 255, 0.08); /* Тоньше подложка */
+}
 
-import React, { useState } from 'react';
-import Image from 'next/image';
-import HubView from '@/components/HubView';
+/* Очистка и фиксы тапа */
+* {
+  -webkit-tap-highlight-color: transparent;
+  outline: none !important;
+}
 
-export default function Page() {
-  const [showHub, setShowHub] = useState(false);
+/* Утонченный Таббар (Высота уменьшена, поднят выше) */
+.tbar-refined {
+  position: relative;
+  background: var(--t-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 24px; /* Меньше радиус */
+  display: flex;
+  padding: 3px; /* Тоньше отступы внутри */
+  width: 290px; /* Компактная ширина */
+  border: 0.5px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
 
-  if (showHub) return <HubView />;
+.t-item-refined {
+  flex: 1;
+  padding: 6px 0 5px 0; /* Очень компактная высота кнопки */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--inact);
+  position: relative;
+  z-index: 2;
+  background: none;
+  border: none;
+  transition: color 0.2s ease;
+}
 
-  return (
-    <main className="h-screen w-full bg-black overflow-hidden flex flex-col items-center justify-between p-10">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[60%] bg-white/5 blur-[120px] rounded-full z-0" />
-      
-      <div className="flex-1 flex flex-col items-center justify-center z-10 w-full">
-        <div className="relative w-64 h-64 mb-10">
-          <Image src="/Pics/FacePic.PNG" alt="Face" fill priority className="object-contain" />
-        </div>
-        <h1 className="text-[28px] font-bold tracking-tight text-white mb-4 text-center">Welcome to PluginBox</h1>
-        <p className="text-white/50 text-[16px] leading-relaxed max-w-[320px] text-center px-2">
-          Download, create and use plugins directly in Telegram chats and channels to enhance your messenger experience.
-        </p>
-      </div>
+.t-item-refined.active { color: var(--act); }
 
-      <div className="w-full max-w-xs z-10 pb-8 flex flex-col items-center">
-        <button 
-          onClick={() => setShowHub(true)}
-          className="white-glass-button w-full text-black font-bold py-4 rounded-full text-[16px] mb-6"
-        >
-          Get Started
-        </button>
-        <p className="text-white/50 text-[11px] text-center max-w-[270px]">
-          By continuing, you accept the <span className="text-white font-medium">User Agreement</span> and <span className="text-white font-medium">Privacy Policy</span>.
-        </p>
-      </div>
-    </main>
-  );
+/* Иконки: Уменьшены */
+.ic-refined {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 2px;
+  filter: grayscale(1) brightness(0.8);
+  transition: filter 0.2s ease;
+}
+
+.t-item-refined.active .ic-refined {
+  filter: grayscale(0) brightness(1.2);
+}
+
+/* Текст: Уменьшен до 10px (как на референсе) */
+.t-txt-refined {
+  font-size: 10px;
+  font-weight: 500;
+  color: inherit;
+  letter-spacing: -0.1px;
+}
+
+/* Слайдер-подложка: Тоньше и изящнее */
+.slid-refined {
+  position: absolute;
+  top: 3px;
+  height: calc(100% - 6px);
+  background: var(--pill);
+  border-radius: 20px;
+  z-index: 1;
+  transition: left 0.16s cubic-bezier(0.3, 0.7, 0.3, 1);
+  opacity: 1;
 }
