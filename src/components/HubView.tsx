@@ -1,82 +1,111 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Lottie from 'lottie-react';
 
 export default function HubView() {
   const [activeTab, setActiveTab] = useState('hub');
-  
-  // Ширина будет зафиксирована для всех элементов
-  const contentWidth = "w-[90%] max-w-[360px]";
+  const [userData, setUserData] = useState({ firstName: 'U', photoUrl: '' });
+
+  // Фиксированная ширина для всех центральных блоков (как на референсе)
+  const contentWidth = "w-[88%] max-w-[340px]";
+
+  // Подтягиваем данные из Telegram
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp) {
+      const tg = (window as any).Telegram.WebApp;
+      tg.ready();
+      tg.expand(); // Гарантируем fullscreen
+      setUserData({
+        firstName: tg.initDataUnsafe?.user?.first_name || 'U',
+        photoUrl: tg.initDataUnsafe?.user?.photo_url || ''
+      });
+    }
+  }, []);
 
   const tabs = [
-    { id: 'hub', label: 'Hub', icon: 'Hub' },
-    { id: 'store', label: 'Store', icon: 'Store' },
-    { id: 'socket', label: 'Socket', icon: 'Socket' }
+    { id: 'hub', label: 'Hub', icon: '/Icons/Hub.json' },
+    { id: 'store', label: 'Store', icon: '/Icons/Store.json' },
+    { id: 'socket', label: 'Socket', icon: '/Icons/Socket.json' }
   ];
 
   return (
-    <div className="h-screen w-full flex flex-col bg-black pt-[calc(env(safe-area-inset-top)+20px)] items-center">
+    <div className="h-screen w-full flex flex-col bg-black text-white overflow-hidden items-center select-none touch-none">
       
-      {/* Header: Выровнен по ширине контента */}
-      <header className={`${contentWidth} flex justify-between items-center mb-6`}>
-        <div className="flex items-center gap-2">
-          <Image src="/Icons/BoxLogo.png" alt="Logo" width={26} height={26} />
-          <span className="text-[22px] font-bold tracking-tight text-white">PluginBox</span>
+      {/* 1. HEADER (Safe Area учтен жестким pt) */}
+      <header className={`${contentWidth} flex justify-between items-center pt-[60px] mb-5`}>
+        <div className="flex items-center gap-2.5">
+          <Image src="/Icons/BoxLogo.png" alt="Logo" width={22} height={22} className="opacity-90" />
+          <span className="text-[19px] font-semibold tracking-tight">PluginBox</span>
         </div>
-        {/* Аватарка в квадрате со скруглением, размер под стать заголовку */}
-        <div className="w-[30px] h-[30px] bg-zinc-800 rounded-[8px] border border-white/10 overflow-hidden">
-          <div className="w-full h-full bg-gradient-to-br from-zinc-700 to-zinc-900" />
+        {/* Аватарка: Квадратная, компактная */}
+        <div className="w-[28px] h-[28px] bg-zinc-800 rounded-[7px] border border-white/10 overflow-hidden shadow-inner">
+          {userData.photoUrl ? (
+            <img src={userData.photoUrl} alt="Av" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-[12px] font-bold text-zinc-500">
+              {userData.firstName[0]}
+            </div>
+          )}
         </div>
       </header>
 
-      {/* Search Bar: Точь-в-точь по ширине и с круглыми углами */}
-      <div className={`${contentWidth} mb-12`}>
-        <div className="w-full bg-[#19191b] rounded-full px-4 py-3 flex items-center gap-3 border border-white/5">
-          <div className="w-5 h-5 flex items-center justify-center opacity-40">
-             <Image src="/Icons/Search.json" alt="Search" width={18} height={18} unoptimized className="invert" />
+      {/* 2. SEARCH BAR (Уменьшена высота, стиль под референс) */}
+      <div className={`${contentWidth} mb-10`}>
+        <div className="w-full bg-[#1c1c1e] rounded-full px-4 py-2.5 flex items-center gap-3 border border-white/[0.03]">
+          <div className="w-4 h-4 flex items-center justify-center opacity-30 invert">
+             <Image src="/Icons/Search.json" alt="S" width={16} height={16} unoptimized />
           </div>
           <input 
             type="text" 
-            placeholder="Search plugins, names, authors..." 
-            className="bg-transparent border-none outline-none text-[15px] text-[#8e8e93] w-full placeholder:text-[#8e8e93]"
+            placeholder="Plugins, authors, names..." 
+            className="bg-transparent border-none outline-none text-[14px] text-[#8e8e93] w-full placeholder:text-[#8e8e93]/70 caret-white"
+            readOnly
           />
         </div>
       </div>
 
-      {/* Empty State */}
-      <div className="flex-1 flex flex-col items-center justify-center pb-32">
-        <div className="relative w-44 h-44 mb-6">
+      {/* 3. EMPTY STATE (Центрирован в оставшемся пространстве) */}
+      <div className="flex-1 flex flex-col items-center justify-center pb-[120px]">
+        <div className="relative w-40 h-40 mb-5 opacity-70">
           <Image src="/Pics/None.png" alt="None" fill className="object-contain" />
         </div>
-        <h3 className="text-[20px] font-bold text-white mb-2">No plugins yet</h3>
-        <p className="text-[#8e8e93] text-center text-[15px] max-w-[260px] leading-relaxed">
-          It's empty here. Time to download your first <span className="text-white">plugin</span>!
+        <h3 className="text-[18px] font-semibold text-white/90 mb-1.5">No plugins yet</h3>
+        <p className="text-[#8e8e93] text-center text-[14px] max-w-[250px] leading-relaxed">
+          It's empty here. Time to download your first <span className="text-white/90 font-medium">plugin</span>!
         </p>
       </div>
 
-      {/* Navigation: Твой CSS в действии */}
-      <div className="t-wrap">
-        <div className="tbar">
+      {/* 4. NAVIGATION TABBAR (Твой CSS + Правки по высоте и позиции) */}
+      <div className="fixed bottom-[30px] width-full flex justify-center z-[1000] select-none">
+        <div className="tbar-refined">
+          {/* Слайдер-подложка (Pill) */}
           <div 
-            className="slid" 
+            className="slid-refined" 
             style={{ 
-              width: 'calc(33.33% - 4px)', 
-              left: activeTab === 'hub' ? '4px' : activeTab === 'store' ? '33.33%' : '66.66%',
-              opacity: 1
+              width: 'calc(33.33% - 6px)', 
+              left: activeTab === 'hub' ? '3px' : activeTab === 'store' ? '33.33%' : '66.66%',
             }} 
           />
+          
+          {/* Кнопки меню */}
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`t-item ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab(tab.id);
+                if ((window as any).Telegram?.WebApp?.HapticFeedback) {
+                  (window as any).Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                }
+              }}
+              className={`t-item-refined ${activeTab === tab.id ? 'active' : ''}`}
             >
-              <div className="ic flex items-center justify-center">
-                {/* Здесь будет твой Lottie. Пока держим цвет через фильтры как в твоем CSS */}
-                <div className={`w-6 h-6 bg-current rounded-sm opacity-30`} />
+              {/* Компактные иконки (Lottie placeholder) */}
+              <div className="ic-refined flex items-center justify-center">
+                <div className={`w-5 h-5 bg-current rounded-sm opacity-20`} />
               </div>
-              <span className="t-txt">{tab.label}</span>
+              <span className="t-txt-refined">{tab.label}</span>
             </button>
           ))}
         </div>
