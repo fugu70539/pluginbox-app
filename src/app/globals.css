@@ -2,54 +2,82 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Градиентный фон: сверху светлее, внизу черный */
-.bg-hub-gradient {
-  background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 60%, #000000 100%);
+:root {
+  --bg: #000;
+  --t-bg: rgba(25, 25, 27, 0.96);
+  --act: #ffffff;
+  --inact: #8e8e93;
+  --pill: rgba(255, 255, 255, 0.1);
 }
 
-/* Фикс меню */
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.t-wrap {
+  position: fixed;
+  bottom: calc(30px + env(safe-area-inset-bottom));
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 1000;
+}
+
 .tbar {
   position: relative;
-  background: rgba(25, 25, 27, 0.96);
-  backdrop-filter: blur(25px);
+  background: var(--t-bg);
+  backdrop-filter: blur(25px) saturate(200%);
+  -webkit-backdrop-filter: blur(25px) saturate(200%);
   border-radius: 34px;
   display: flex;
   padding: 4px;
   width: 86%;
   max-width: 350px;
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border: 0.5px solid rgba(255, 255, 255, 0.06);
 }
 
 .t-item {
+  position: relative;
+  z-index: 2;
   flex: 1;
   padding: 8px 0 6px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #8e8e93;
-  z-index: 2;
-  transition: color 0.2s;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--inact);
+  transition: color 0.2s ease;
 }
 
-.t-item.active { color: #fff; }
+.t-item.active { color: var(--act); }
 
-/* Иконки чуть крупнее */
-.t-item div {
-  width: 28px !important;
-  height: 28px !important;
-  transition: transform 0.2s;
-}
-
-.t-item:active div {
-  transform: scale(0.9);
+.t-txt { 
+  font-size: 10px;
+  font-weight: 500; 
+  color: inherit;
+  letter-spacing: -0.2px;
+  margin-top: 2px;
 }
 
 .slid {
   position: absolute;
   top: 4px;
   height: calc(100% - 8px);
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--pill);
   border-radius: 30px;
   z-index: 1;
-  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1.1); /* Более упругий ход */
+  transition: left 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.white-glass-button {
+  background: linear-gradient(180deg, #ffffff 0%, #e2e2e2 100%);
+  @apply active:scale-95 transition-transform;
 }
