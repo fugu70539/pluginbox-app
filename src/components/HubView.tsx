@@ -1,98 +1,115 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import Lottie from 'lottie-react';
+import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 
-// Импортируем JSON-файлы анимаций (убедись, что пути верны)
-// Если импорт напрямую не работает, будем загружать через fetch ниже
-import searchIcon from '../../public/Icons/Search.json';
+// Импорты анимаций
 import hubIcon from '../../public/Icons/Hub.json';
 import storeIcon from '../../public/Icons/Store.json';
 import socketIcon from '../../public/Icons/Socket.json';
 
 export default function HubView() {
   const [activeTab, setActiveTab] = useState('hub');
-  const contentWidth = "w-[86%] max-w-[350px]";
+  
+  // Рефы для управления скоростью и проигрыванием
+  const storeRef = useRef<LottieRefCurrentProps>(null);
+  const hubRef = useRef<LottieRefCurrentProps>(null);
+  const socketRef = useRef<LottieRefCurrentProps>(null);
 
-  const tabs = [
-    { id: 'hub', label: 'Hub', animation: hubIcon },
-    { id: 'store', label: 'Store', animation: storeIcon },
-    { id: 'socket', label: 'Socket', animation: socketIcon }
-  ];
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp) {
+      const tg = (window as any).Telegram.WebApp;
+      tg.ready();
+      tg.expand(); // Расширяем на весь экран
+      tg.headerColor = '#1a1a1a'; // Цвет статус-бара в тон фону
+    }
+  }, []);
+
+  const handleTabClick = (tabId: string) => {
+    setActiveTab(tabId);
+    
+    // Сбрасываем и играем один раз
+    const refs: Record<string, any> = { hub: hubRef, store: storeRef, socket: socketRef };
+    const currentRef = refs[tabId]?.current;
+    
+    if (currentRef) {
+      currentRef.stop();
+      if (tabId === 'store') {
+        currentRef.setSpeed(15); // В 15 раз быстрее
+      } else {
+        currentRef.setSpeed(1.5); // Обычные чуть бодрее
+      }
+      currentRef.play();
+    }
+
+    if ((window as any).Telegram?.WebApp?.HapticFeedback) {
+      (window as any).Telegram.WebApp.HapticFeedback.impactOccurred('light');
+    }
+  };
+
+  const contentWidth = "w-[88%] max-w-[350px]";
 
   return (
-    <div className="h-screen w-full bg-black flex flex-col items-center overflow-hidden">
+    <div className="h-screen w-full flex flex-col items-center overflow-hidden bg-hub-gradient">
       
-      {/* Header */}
-      <header className={`${contentWidth} flex justify-between items-center mt-16 mb-6`}>
+      {/* Header с учетом Safe Area из Telegram API */}
+      <header 
+        className={`${contentWidth} flex justify-between items-center mb-10`}
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 20px)' }}
+      >
         <div className="flex items-center gap-2">
-          {/* PNG грузим через Image */}
           <Image src="/Icons/BoxLogo.png" alt="Logo" width={24} height={24} />
           <span className="text-xl font-bold tracking-tight text-white">PluginBox</span>
         </div>
-        <div className="w-[30px] h-[30px] bg-zinc-800 rounded-lg border border-white/10 overflow-hidden">
-          <div className="w-full h-full bg-zinc-700 opacity-50" />
+        <div className="w-[32px] h-[32px] bg-zinc-800 rounded-lg border border-white/10 overflow-hidden shadow-lg">
+          <div className="w-full h-full bg-gradient-to-tr from-zinc-700 to-zinc-900" />
         </div>
       </header>
 
-      {/* Search Bar */}
-      <div className={`${contentWidth} mb-8`}>
-        <div className="w-full bg-[#19191b] rounded-full px-4 py-2 flex items-center gap-3 border border-white/5">
-          <div className="w-5 h-5 flex items-center justify-center">
-            {/* Lottie для поиска */}
-            <Lottie 
-              animationData={searchIcon} 
-              loop={false} 
-              className="w-full h-full invert opacity-40" 
-            />
-          </div>
-          <input 
-            type="text" 
-            placeholder="Search plugins, authors..." 
-            className="bg-transparent border-none outline-none text-[14px] text-[#8e8e93] w-full placeholder:text-[#8e8e93]"
-          />
-        </div>
-      </div>
-
-      {/* Empty State */}
-      <div className="flex-1 flex flex-col items-center justify-center pb-32">
-        <div className="relative w-40 h-40 mb-6 opacity-80">
-          {/* PNG грузим через Image */}
+      {/* Пустое состояние (Поиск удален) */}
+      <div className="flex-1 flex flex-col items-center justify-center pb-40">
+        <div className="relative w-44 h-44 mb-6 grayscale opacity-60">
           <Image src="/Pics/None.png" alt="None" fill className="object-contain" />
         </div>
-        <h3 className="text-lg font-bold text-white mb-1">No plugins yet</h3>
-        <p className="text-[#8e8e93] text-center text-[14px] max-w-[250px] leading-relaxed">
-          It&apos;s empty here. Time to download your first <span className="text-white">plugin</span>!
+        <h3 className="text-xl font-bold text-white mb-2 tracking-wide">Плагинов нет</h3>
+        <p className="text-[#8e8e93] text-center text-[15px] max-w-[280px] leading-relaxed">
+          Сейчас здесь пусто. Самое время скачать свой первый <span className="text-white font-medium">плагин</span>!
         </p>
       </div>
 
-      {/* TabBar */}
+      {/* TabBar с исправленным пузырем */}
       <div className="t-wrap">
         <div className="tbar">
+          {/* Исправленный "Пузырь" — теперь ездит ровно */}
           <div 
             className="slid" 
             style={{ 
               width: 'calc(33.33% - 8px)', 
-              left: activeTab === 'hub' ? '4px' : activeTab === 'store' ? '33.33%' : '66.66%'
+              left: activeTab === 'hub' ? '4px' : activeTab === 'store' ? 'calc(33.33% + 0px)' : 'calc(66.66% - 4px)'
             }} 
           />
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`t-item ${activeTab === tab.id ? 'active' : ''}`}
-            >
-              <div className="w-6 h-6 flex items-center justify-center transition-all duration-300">
-                <Lottie 
-                  animationData={tab.animation} 
-                  loop={activeTab === tab.id}
-                  className={`w-full h-full ${activeTab === tab.id ? 'opacity-100' : 'opacity-40 grayscale'}`}
-                />
-              </div>
-              <span className="t-txt">{tab.label}</span>
-            </button>
-          ))}
+          
+          <button onClick={() => handleTabClick('hub')} className={`t-item ${activeTab === 'hub' ? 'active' : ''}`}>
+             <div className="w-7 h-7">
+                <Lottie lottieRef={hubRef} animationData={hubIcon} loop={false} autoplay={false} />
+             </div>
+             <span className="t-txt">Hub</span>
+          </button>
+
+          <button onClick={() => handleTabClick('store')} className={`t-item ${activeTab === 'store' ? 'active' : ''}`}>
+             <div className="w-7 h-7">
+                <Lottie lottieRef={storeRef} animationData={storeIcon} loop={false} autoplay={false} />
+             </div>
+             <span className="t-txt">Store</span>
+          </button>
+
+          <button onClick={() => handleTabClick('socket')} className={`t-item ${activeTab === 'socket' ? 'active' : ''}`}>
+             <div className="w-7 h-7">
+                <Lottie lottieRef={socketRef} animationData={socketIcon} loop={false} autoplay={false} />
+             </div>
+             <span className="t-txt">Socket</span>
+          </button>
         </div>
       </div>
     </div>
